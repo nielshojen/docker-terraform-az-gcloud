@@ -1,7 +1,7 @@
 FROM debian:buster-slim
 
 RUN apt-get update
-RUN apt-get -y install curl ca-certificates curl apt-transport-https lsb-release gnupg
+RUN apt-get -y install curl ca-certificates curl apt-transport-https lsb-release gnupgs software-properties-common
 
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
 RUN apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
