@@ -1,21 +1,27 @@
 FROM debian:buster-slim
+
+RUN sudo apt-get update
+RUN sudo apt-get -y install curl ca-certificates curl apt-transport-https lsb-release gnupg
+
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 RUN sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 RUN sudo apt-get update
-RUN sudo apt-get install terraform
+RUN sudo apt-get -y install terraform
 
-RUN sudo apt-get update
-RUN sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
 RUN AZ_REPO=$(lsb_release -cs) && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-RUN sudo apt-get update && sudo apt-get install azure-cli
+RUN sudo apt-get update
+RUN sudo apt-get -y install azure-cli
 
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-RUN sudo apt-get -y --no-install-recommends install apt-transport-https ca-certificates gnupg
+RUN sudo apt-get -y install apt-transport-https ca-certificates gnupg
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-RUN sudo apt-get update && sudo apt-get -y --no-install-recommends install google-cloud-sdk
+RUN sudo apt-get update
+RUN sudo apt-get -y install google-cloud-sdk
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* 
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/* 
+
 WORKDIR /workspace
 
 RUN groupadd --gid 1001 nonroot && useradd --gid nonroot --create-home --uid 1001 nonroot && chown nonroot:nonroot /workspace
